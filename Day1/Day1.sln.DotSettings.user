@@ -1,0 +1,19 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=1b6a0f3b_002D8371_002D4c74_002D9f7b_002Dfac62d09bbc7/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Test1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::1E6E4924-50F7-4BCE-B63E-CE4378FECA9D::net8.0::Day1.Tests.Test1&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=389a2fc2_002D2dd1_002D4ba9_002D8285_002D3c4884315713/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Test1 #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::1E6E4924-50F7-4BCE-B63E-CE4378FECA9D::net8.0::Day1.Tests.I_receive_two_digits_correctly_when_expect_only_digit_to_be_parsed&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::1E6E4924-50F7-4BCE-B63E-CE4378FECA9D::net8.0::Day1.Tests.It_Returns_Correct_Result_For_Main_Task&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::1E6E4924-50F7-4BCE-B63E-CE4378FECA9D::net8.0::Day1.Tests.I_receive_two_digits_correctly_when_first_and_last_digits_are_verbal_digits&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::1E6E4924-50F7-4BCE-B63E-CE4378FECA9D::net8.0::Day1.Tests.I_receive_two_digits_correctly_when_first_and_last_digits_are_written_as_digits&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ba61987d_002D7150_002D43ad_002Dbecd_002Da1192ddae8aa/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Test1 #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::1E6E4924-50F7-4BCE-B63E-CE4378FECA9D::net8.0::Day1.Tests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
