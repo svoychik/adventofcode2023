@@ -101,3 +101,4 @@
 /Users/svoychik/Documents/Projects/adventofcode2023/Day1/obj/Debug/net8.0/Day1.pdb
 /Users/svoychik/Documents/Projects/adventofcode2023/Day1/obj/Debug/net8.0/Day1.genruntimeconfig.cache
 /Users/svoychik/Documents/Projects/adventofcode2023/Day1/obj/Debug/net8.0/ref/Day1.dll
+/Users/svoychik/Documents/Projects/adventofcode2023/Day1/obj/Debug/net8.0/Day1.sourcelink.json

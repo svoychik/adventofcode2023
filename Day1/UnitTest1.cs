@@ -13,6 +13,7 @@ public class Tests
         var actualSum = sln.CalculateSum(lines);
 
         Console.WriteLine($"The result is {actualSum}");
+        actualSum.Should().Be(54203);
     }
 
     [Test]
@@ -85,81 +86,39 @@ public class Solution
     public int CalculateSum(string[] arr) =>
         arr
             .Select(FindTwoDigits)
-            .Select(x => x.Item1 + "" + x.Item2)
+            .Select(x => $"{x.Item1}{x.Item2}")
             .Select(int.Parse)
             .Sum();
 
     public (int, int) FindTwoDigits(string line)
     {
+        var firstNumberIndex = int.MaxValue;
+        var lastNumberIndex = int.MinValue;
         var firstNumber = int.MaxValue;
-        var lastNumber = int.MaxValue;
-        var str = "";
-
-        var chars = line.ToCharArray();
-        for (var i = 0; i < chars.Length; i++)
+        var lastNumber = int.MinValue;
+        var chars = line.ToCharArray().AsSpan();
+        foreach(var kv in Dict)
         {
-            str += chars[i];
-            if (TryParseFirstDigit(str, out var result))
+            var currFirstIdx = chars.IndexOf(kv.Key);
+            var currLastIdx = chars.LastIndexOf(kv.Key);
+            //if we found firstIdx, last idx should be present as well
+            if (currFirstIdx == -1)
             {
-                firstNumber = result;
-                break;
+                continue;
+            }
+
+            if (currLastIdx > lastNumberIndex)
+            {
+                lastNumberIndex = currLastIdx;
+                lastNumber = kv.Value;
+            }
+            if (currFirstIdx < firstNumberIndex)
+            {
+                firstNumberIndex = currFirstIdx;
+                firstNumber = kv.Value;
             }
         }
-
-        str = "";
-
-        for (int i = chars.Length - 1; i >= 0; i--)
-        {
-            str = str.Insert(0, chars[i].ToString());
-            if (TryParseLastDigit(str, out var result))
-            {
-                lastNumber = result;
-                break;
-            }
-        }
-
         return (firstNumber, lastNumber);
     }
 
-    private bool TryParseFirstDigit(string str, out int digit)
-    {
-        digit = -1;
-        var listOfFindings = new List<(string key, int index)>();
-        foreach (var kv in Dict)
-        {
-            var lastIndex = str.IndexOf(kv.Key, StringComparison.Ordinal);
-            if (lastIndex != -1)
-            {
-                digit = kv.Value;
-                listOfFindings.Add((kv.Key, lastIndex));
-            }
-        }
-
-        if (!listOfFindings.Any())
-            return false;
-        var result = listOfFindings.MinBy(x => x.index);
-        digit = Dict[result.key];
-        return true;
-    }
-
-    private bool TryParseLastDigit(string str, out int digit)
-    {
-        digit = -1;
-        var listOfFindings = new List<(string key, int index)>();
-        foreach (var kv in Dict)
-        {
-            var lastIndex = str.LastIndexOf(kv.Key, StringComparison.Ordinal);
-            if (lastIndex != -1)
-            {
-                digit = kv.Value;
-                listOfFindings.Add((kv.Key, lastIndex));
-            }
-        }
-
-        if (!listOfFindings.Any())
-            return false;
-        var result = listOfFindings.MaxBy(x => x.index);
-        digit = Dict[result.key];
-        return true;
-    }
 }
