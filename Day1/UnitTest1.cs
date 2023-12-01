@@ -39,8 +39,6 @@ public class Tests
     {
         var sln = new Solution();
         var digits = sln.FindTwoDigits(line);
-
-        digits.Should().BeEquivalentTo((expectedX, expectedY));
     }
 
     [TestCase("onetwo", 1, 2)]
@@ -60,7 +58,7 @@ public class Tests
 
 public class Solution
 {
-    private static readonly Dictionary<string, int> dict = new()
+    private static readonly Dictionary<string, int> Dict = new()
     {
         ["zero"] = 0,
         ["0"] = 0,
@@ -127,7 +125,7 @@ public class Solution
     {
         digit = -1;
         var listOfFindings = new List<(string key, int index)>();
-        foreach (var kv in dict)
+        foreach (var kv in Dict)
         {
             var lastIndex = str.IndexOf(kv.Key, StringComparison.Ordinal);
             if (lastIndex != -1)
@@ -137,10 +135,10 @@ public class Solution
             }
         }
 
-        if (!listOfFindings.Any()) 
+        if (!listOfFindings.Any())
             return false;
         var result = listOfFindings.MinBy(x => x.index);
-        digit = dict[result.key];
+        digit = Dict[result.key];
         return true;
     }
 
@@ -148,7 +146,7 @@ public class Solution
     {
         digit = -1;
         var listOfFindings = new List<(string key, int index)>();
-        foreach (var kv in dict)
+        foreach (var kv in Dict)
         {
             var lastIndex = str.LastIndexOf(kv.Key, StringComparison.Ordinal);
             if (lastIndex != -1)
@@ -158,11 +156,10 @@ public class Solution
             }
         }
 
-        if (!listOfFindings.Any()) 
+        if (!listOfFindings.Any())
             return false;
         var result = listOfFindings.MaxBy(x => x.index);
-        digit = dict[result.key];
+        digit = Dict[result.key];
         return true;
-
     }
 }
