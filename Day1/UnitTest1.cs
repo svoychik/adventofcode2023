@@ -47,6 +47,7 @@ public class Tests
     [TestCase("oneight", 1, 8)]
     [TestCase("onexxxxxeight", 1, 8)]
     [TestCase("sevenbsixsbzmone55", 7, 5)]
+    [TestCase("nine8sevenfourtwopl7", 9, 7)]
     public void I_receive_two_digits_correctly_when_first_and_last_digits_are_verbal_digits(
         string line, int expectedX, int expectedY)
     {
@@ -100,7 +101,7 @@ public class Solution
         for (var i = 0; i < chars.Length; i++)
         {
             str += chars[i];
-            if (TryParseDigit(str, out var result, false))
+            if (TryParseFirstDigit(str, out var result))
             {
                 firstNumber = result;
                 break;
@@ -112,7 +113,7 @@ public class Solution
         for (int i = chars.Length - 1; i >= 0; i--)
         {
             str = str.Insert(0, chars[i].ToString());
-            if (TryParseDigit(str, out var result, true))
+            if (TryParseLastDigit(str, out var result))
             {
                 lastNumber = result;
                 break;
@@ -122,35 +123,46 @@ public class Solution
         return (firstNumber, lastNumber);
     }
 
-    private bool TryParseFirstDigit(string str, out int digit, bool compareEndsWith = false)
+    private bool TryParseFirstDigit(string str, out int digit)
     {
+        digit = -1;
+        var listOfFindings = new List<(string key, int index)>();
         foreach (var kv in dict)
         {
-            if (str.StartsWith(kv.Key))
+            var lastIndex = str.IndexOf(kv.Key, StringComparison.Ordinal);
+            if (lastIndex != -1)
             {
                 digit = kv.Value;
-                return true;
+                listOfFindings.Add((kv.Key, lastIndex));
             }
         }
 
-        digit = -1;
-        return false;
+        if (!listOfFindings.Any()) 
+            return false;
+        var result = listOfFindings.MinBy(x => x.index);
+        digit = dict[result.key];
+        return true;
     }
 
     private bool TryParseLastDigit(string str, out int digit)
     {
+        digit = -1;
         var listOfFindings = new List<(string key, int index)>();
         foreach (var kv in dict)
         {
-            var lastIndex = str.LastIndexOf(kv.Key);
+            var lastIndex = str.LastIndexOf(kv.Key, StringComparison.Ordinal);
             if (lastIndex != -1)
             {
                 digit = kv.Value;
-                return true;
+                listOfFindings.Add((kv.Key, lastIndex));
             }
         }
 
-        digit = -1;
-        return false;
+        if (!listOfFindings.Any()) 
+            return false;
+        var result = listOfFindings.MaxBy(x => x.index);
+        digit = dict[result.key];
+        return true;
+
     }
 }
