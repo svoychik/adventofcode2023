@@ -9,15 +9,15 @@ public enum Color
     Blue
 };
 
-public record GameInfo(int GameId, List<CubeReveal> CubeRevealsList);
+public record GameInfo(int GameId, List<CubesReveal> CubeRevealsList);
 
-public record CubeReveal(int Quantity, Color Color);
+public record CubesReveal(int Quantity, Color Color);
 
-public record CubesAmountConfiguration(int GreenMaxAmount, int RedMaxAmount, int BlueMaxAmount);
+public record CubesConfiguration(int GreenMaxAmount, int RedMaxAmount, int BlueMaxAmount);
 
 public class Tests
 {
-    private readonly CubesAmountConfiguration _configuration = new(13, 12, 14);
+    private readonly CubesConfiguration _configuration = new(13, 12, 14);
 
     [Test]
     public async Task It_solves_part1_for_my_personal_input()
@@ -67,14 +67,14 @@ public class Tests
         var result = sln.ParseGame(line);
 
         result.GameId.Should().Be(101);
-        result.CubeRevealsList.Should().BeEquivalentTo(new List<CubeReveal>()
+        result.CubeRevealsList.Should().BeEquivalentTo(new List<CubesReveal>()
         {
-            new CubeReveal(3, Color.Blue),
-            new CubeReveal(4, Color.Red),
-            new CubeReveal(1, Color.Red),
-            new CubeReveal(2, Color.Green),
-            new CubeReveal(6, Color.Blue),
-            new CubeReveal(2, Color.Green),
+            new CubesReveal(3, Color.Blue),
+            new CubesReveal(4, Color.Red),
+            new CubesReveal(1, Color.Red),
+            new CubesReveal(2, Color.Green),
+            new CubesReveal(6, Color.Blue),
+            new CubesReveal(2, Color.Green),
         });
     }
 }
@@ -85,11 +85,11 @@ public class Solution
     private readonly int _blueMax;
     private readonly int _redMax;
 
-    public Solution(CubesAmountConfiguration cubesAmountConfiguration)
+    public Solution(CubesConfiguration cubesConfiguration)
     {
-        _greenMax = cubesAmountConfiguration.GreenMaxAmount;
-        _blueMax = cubesAmountConfiguration.BlueMaxAmount;
-        _redMax = cubesAmountConfiguration.RedMaxAmount;
+        _greenMax = cubesConfiguration.GreenMaxAmount;
+        _blueMax = cubesConfiguration.BlueMaxAmount;
+        _redMax = cubesConfiguration.RedMaxAmount;
     }
 
     public int CalculateForPt1(string[] str)
@@ -103,7 +103,6 @@ public class Solution
             .Sum(x => x.gameId);
     }
 
-    //calculates max amount of cubes required for each game and multiplies them 
     public int CalculateForPt2(string[] str)
     {
         return str
@@ -114,22 +113,20 @@ public class Solution
 
     public GameInfo ParseGame(string input)
     {
-        List<CubeReveal> cubeRevealsList = new();
-        //Game 101:
         var gameId = int.Parse(
             input[..input.IndexOf(':')].Replace("Game ", "")
         );
 
         var gameData = input[(input.IndexOf(':') + 1)..].TrimStart();
-        var parts = gameData.Split(';');
-        foreach (var part in parts)
+        var sets = gameData.Split(';');
+        List<CubesReveal> cubeRevealsList = new();
+        foreach (var set in sets)
         {
-            // Split each part by comma
-            var elements = part.Split(',');
+            var cubeColors = set.Split(',');
             cubeRevealsList.AddRange(
-                elements
-                    .Select(element => element.Trim().Split(' '))
-                    .Select(details => new CubeReveal(int.Parse(details[0]), Enum.Parse<Color>(details[1], true))));
+                cubeColors
+                    .Select(cubeColor => cubeColor.Trim().Split(' '))
+                    .Select(details => new CubesReveal(int.Parse(details[0]), Enum.Parse<Color>(details[1], true))));
         }
 
         return new GameInfo(gameId, cubeRevealsList);
