@@ -105,8 +105,6 @@ public class Solution
     //calculates max amount of cubes required for each game and multiplies them 
     public int CalculateForPt2(string[] str)
     {
-        var parsedGame = str
-            .Select(ParseGame).ToList();
         return str
             .Select(GetMaxAmountForCubes)
             .Select(x => x.maxBlueUsed * x.maxGreenUsed * x.maxRedUsed)
