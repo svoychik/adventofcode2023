@@ -101,6 +101,7 @@ public class Solution
         {
             var currFirstIdx = chars.IndexOf(kv.Key);
             var currLastIdx = chars.LastIndexOf(kv.Key);
+
             //if we found firstIdx, last idx should be present as well
             if (currFirstIdx == -1)
             {
