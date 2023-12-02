@@ -1,4 +1,5 @@
 using FluentAssertions;
+
 namespace Day2;
 
 public enum Color
