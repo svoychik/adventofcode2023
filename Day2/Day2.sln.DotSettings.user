@@ -2,5 +2,7 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ca3049d2_002D76cd_002D41d1_002Db3f2_002D127fa2b7a04d/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="I_am_able_to_parse_amount_of_cubes_from_line" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;NUnit3x::015788B8-8DDE-49ED-B2D3-60603B79A35F::net8.0::Day2.Tests.I_am_able_to_parse_amount_of_cubes_from_line&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::015788B8-8DDE-49ED-B2D3-60603B79A35F::net8.0::Day2.Tests.It_works_for_my_personal_input&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::015788B8-8DDE-49ED-B2D3-60603B79A35F::net8.0::Day2.Tests.It_returns_correct_result_for_main_task&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

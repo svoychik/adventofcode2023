@@ -101,3 +101,4 @@
 /Users/svoychik/Documents/Projects/adventofcode2023/Day2/Day2/obj/Debug/net8.0/Day2.pdb
 /Users/svoychik/Documents/Projects/adventofcode2023/Day2/Day2/obj/Debug/net8.0/Day2.genruntimeconfig.cache
 /Users/svoychik/Documents/Projects/adventofcode2023/Day2/Day2/obj/Debug/net8.0/ref/Day2.dll
+/Users/svoychik/Documents/Projects/adventofcode2023/Day2/Day2/bin/Debug/net8.0/input1.txt

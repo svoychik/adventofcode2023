@@ -13,22 +13,31 @@ namespace Day2;
  *
  *
  */
-public enum Color { Red, Green, Blue };
+public enum Color
+{
+    Red,
+    Green,
+    Blue
+};
+
 public record GameInfo(int GameId, List<CubeReveal> CubeRevealsList);
+
 public record CubeReveal(int Quantity, Color Color);
+
 public record CubesAmountConfiguration(int GreenMaxAmount, int RedMaxAmount, int BlueMaxAmount);
 
 public class Tests
 {
+    private readonly CubesAmountConfiguration _configuration = new(13, 12, 14);
+
     [Test]
     public async Task It_works_for_my_personal_input()
     {
-        // var sln = new Solution();
-        // var lines = await File.ReadAllLinesAsync($"input1.txt");
-        // var actualSum = sln.CalculateSum(lines);
-        //
-        // Console.WriteLine($"The result is {actualSum}");
-        // actualSum.Should().Be(54203);
+        var sln = new Solution(_configuration);
+        var lines = await File.ReadAllLinesAsync($"input1.txt");
+        var actualSum = sln.Calculate(lines);
+
+        Console.WriteLine($"The result is {actualSum}");
     }
 
     [Test]
@@ -42,8 +51,8 @@ public class Tests
             "Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red",
             "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"
         };
-            
-        var sln = new Solution();
+
+        var sln = new Solution(_configuration);
         var actualSum = sln.Calculate(str);
 
         actualSum.Should().Be(8);
@@ -53,7 +62,7 @@ public class Tests
     public void I_am_able_to_parse_amount_of_cubes_from_line(
         string line)
     {
-        var sln = new Solution();
+        var sln = new Solution(_configuration);
         var result = sln.ParseGame(line);
         result.GameId.Should().Be(101);
         result.CubeRevealsList.Should().BeEquivalentTo(new List<CubeReveal>()
@@ -111,33 +120,43 @@ public class Solution
 
     public int Calculate(string[] str)
     {
-        str
-            .Select(ParseGame)
-            .Select(game => game
-                .CubeRevealsList
-                    .GroupBy(x => x.Color)
-                    .Select(grp => new
-                    {
-                        groupSum = grp.Sum(x => x.Quantity),
-                        color = grp.Key,
-                        gameId = game.GameId
-                    })
-                .ToList())
-            .Where(list =>
-            {
-                var greenCubes = list.Where(x => x.color == Color.Green);
-                var redCubes = list.Where(x => x.color == Color.Red);
-                var blueCubes = list.Where(x => x.color == Color.Blue);
-                if (greenCubes.Count() > _greenMax)
-                    return true;
-                if (redCubes.Count() > _redMax)
-                    return true;
-                if (blueCubes.Count() > _blueMax)
-                    return true;
+        var parsedGame = str
+            .Select(ParseGame).ToList();
 
-                return false;
-            })
-            .SelectMany(x => x.)
-            .Sum(x => x.G);
+        var listOfValidGames = new List<int>();
+        foreach (var item in parsedGame)
+        {
+            bool gameValid = true;
+
+            foreach (var cubeReveal in item.CubeRevealsList)
+            {
+                if (cubeReveal.Color == Color.Blue && cubeReveal.Quantity > _blueMax)
+                {
+                    gameValid = false;
+                }
+
+                if (cubeReveal.Color == Color.Red && cubeReveal.Quantity > _redMax)
+                {
+                    gameValid = false;
+                }
+
+                if (cubeReveal.Color == Color.Green && cubeReveal.Quantity > _greenMax)
+                {
+                    gameValid = false;
+                }
+            }
+            if(gameValid)
+                listOfValidGames.Add(item.GameId);
+            
+            // var greenCubes = item.CubeRevealsList.Any(x => x.Color == Color.Green).Sum(x => x.Quantity);
+            // var redCubes = item.CubeRevealsList.Where(x => x.Color == Color.Red).Sum(x => x.Quantity);
+            // var blueCubes = item.CubeRevealsList.Where(x => x.Color == Color.Blue).Sum(x => x.Quantity);
+            // if (greenCubes > _greenMax || redCubes > _redMax || blueCubes > _blueMax)
+            //     continue;
+            // else
+            //     listOfValidGames.Add(item.GameId);
+        }
+
+        return listOfValidGames.Sum();
     }
 }
