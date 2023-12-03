@@ -2,7 +2,7 @@ using static Day3.StringArrayConverter;
 
 namespace Day3;
 
-public class Solution
+public class SolutionPt1
 {
     public int Calculate(string str)
     {
@@ -17,14 +17,14 @@ public class Solution
             for (var j = 0; j < matrix.GetLength(1); j++)
             {
                 var el = matrix[i, j];
-
                 if (char.IsDigit(el))
                 {
                     currentNumberStr += el;
                     //if it was already considered as valid, we should not calculate anything
-                    if (!currentNumberValid)
-                        currentNumberValid = IsNumberValid(matrix, i, j);
-                    
+                    if (currentNumberValid) 
+                        continue;
+                    currentNumberValid = IsNumberValid(matrix, i, j);
+
                 }
                 else
                 {
@@ -32,7 +32,6 @@ public class Solution
                     {
                         numbers.Add(int.Parse(currentNumberStr));
                     }
-
                     currentNumberStr = "";
                     currentNumberValid = false;
                 }
