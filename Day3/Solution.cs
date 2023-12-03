@@ -2,28 +2,6 @@ using static Day3.StringArrayConverter;
 
 namespace Day3;
 
-public static class StringArrayConverter
-{
-    public static char[,] ConvertInputToStringArray(string input)
-    {
-        // Split the input into lines
-        string[] lines = input.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-
-        // Create a 2D array with the dimensions based on the input
-        char[,] array = new char[lines.Length, lines[0].Length];
-
-        for (int i = 0; i < lines.Length; i++)
-        {
-            for (int j = 0; j < lines[i].Length; j++)
-            {
-                array[i, j] = lines[i][j];
-            }
-        }
-
-        return array;
-    }
-}
-
 public class Solution
 {
     public int Calculate(string str)
@@ -44,7 +22,9 @@ public class Solution
                 {
                     currentNumberStr += el;
                     //if it was already considered as valid, we should not calculate anything
-                    currentNumberValid = currentNumberValid ? true : IsNumberValid(matrix, i, j);
+                    if (!currentNumberValid)
+                        currentNumberValid = IsNumberValid(matrix, i, j);
+                    
                 }
                 else
                 {
@@ -89,51 +69,5 @@ public class Solution
         }
 
         return false;
-    }
-}
-
-public class Tests
-{
-    private readonly Solution _sln = new();
-
-    [Test]
-    public async Task It_solves_part1_for_my_personal_input()
-    {
-        var text = await File.ReadAllTextAsync($"input.txt");
-        var actualSum = _sln.Calculate(text);
-
-        Console.WriteLine($"The result is {actualSum}");
-        Assert.That(actualSum, Is.EqualTo(525119));
-    }
-
-    [Test]
-    public async Task It_solves_part2_for_my_personal_input()
-    {
-        var text = await File.ReadAllTextAsync($"input.txt");
-        var actualSum = _sln.Calculate(text);
-
-        Console.WriteLine($"The result is {actualSum}");
-        Assert.That(actualSum, Is.EqualTo(525119));
-    }
-
-    [Test]
-    public void It_returns_correct_result_for_main_task()
-    {
-        var str = @"
-467..114..
-...*......
-..35..633.
-......#...
-617*......
-.....+.58.
-..592.....
-......755.
-...$.*....
-.664.598..";
-
-        var sln = new Solution();
-        var actualSum = sln.Calculate(str);
-
-        Assert.That(4361, Is.EqualTo(actualSum));
     }
 }
