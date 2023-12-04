@@ -90,3 +90,16 @@ public class ImprovedSolution
     }
 }
 
+public record Number
+{
+    public int Value { get; set; }
+    public (int X, int Y) Start { get; set; }
+    public (int X, int Y) End { get; set; }
+}
+
+
+public record Symbol
+{
+    public char Value { get; set; }
+    public (int X, int Y) Pos { get; set; }
+};
