@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
-using NUnit.Framework.Constraints;
 
 namespace Day4;
 
+[TestFixture]
 public class Tests
 {
     private readonly string _exampleInput = @"
@@ -13,10 +13,19 @@ Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
 Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
 Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
 ";
+
+    private string _personalInput;
+
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
+    {
+        _personalInput = File.ReadAllText($"input.txt");
+    }
+
     [Test]
     public void It_solves_part1_for_my_personal_input()
     {
-        var actualResult = new Solution().CalculateNumberOfPoints(File.ReadAllText($"input.txt"));
+        var actualResult = new Solution().CalculateNumberOfPoints(_personalInput);
 
         Console.WriteLine($"The result is {actualResult}");
         Assert.That(actualResult, Is.EqualTo(23750));
@@ -25,8 +34,8 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11
     [Test]
     public void It_solves_part2_for_my_personal_input()
     {
-        var actualResult = new Solution().CalculateNumberOfScratchcards(File.ReadAllText("input.txt"));
-        
+        var actualResult = new Solution().CalculateNumberOfScratchcards(_personalInput);
+
         Console.WriteLine($"The result is {actualResult}");
         Assert.That(actualResult, Is.EqualTo(13261850));
     }
@@ -61,14 +70,13 @@ public class Solution
             var numberOfCopies = dict.ContainsKey(i) ? dict[i] + 1 : 1;
             var numberOfCardsWon = numberOfPointsPerCard[i];
 
-            _ = Enumerable.Range(i + 1, numberOfCardsWon)
-                .Select(cardId =>
-                {
-                    dict[cardId] = dict.TryGetValue(cardId, out var val)
-                        ? val + 1 * numberOfCopies
-                        : 1 * numberOfCopies;
-                    return true;
-                }).ToList();
+            for (var cardId = i + 1; (cardId - i) <= numberOfCardsWon; cardId++)
+            {
+                dict[cardId] = dict.TryGetValue(cardId, out var val)
+                    ? val + 1 * numberOfCopies
+                    : 1 * numberOfCopies;
+            }
+            
         }
 
         return lines.Length + dict.Values.Sum();
@@ -87,13 +95,14 @@ public class Solution
             var parts = line.Split("|");
             var number1Str = parts[0].Split(':')[1];
             var number2Str = parts[1];
-            var numbers1 = ExtractNumbersFromTheString(number1Str);
+            var numbers1 = ExtractNumbersFromTheString(number1Str).ToHashSet();
             var numbers2 = ExtractNumbersFromTheString(number2Str).ToHashSet();
             yield return numbers1.Count(numbers2.Contains);
         }
     }
 
     private static readonly string Pattern = @"\d+";
+
     private IEnumerable<int> ExtractNumbersFromTheString(string str)
     {
         foreach (Match match in Regex.Matches(str, Pattern))
