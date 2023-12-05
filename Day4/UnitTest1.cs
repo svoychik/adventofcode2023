@@ -74,9 +74,9 @@ public class Solution
             {
                 dict[cardId] = dict.TryGetValue(cardId, out var val)
                     ? val + 1 * numberOfCopies
+
                     : 1 * numberOfCopies;
             }
-            
         }
 
         return lines.Length + dict.Values.Sum();
