@@ -1,3 +1,5 @@
+using NUnit.Framework.Constraints;
+
 namespace Day5;
 
 public class Tests
@@ -25,10 +27,10 @@ public class Tests
     [Test]
     public void It_solves_part2_for_my_personal_input()
     {
-        // var actualResult = new Solution().Ca(_personalInput);
-        //
-        // Console.WriteLine($"The result is {actualResult}");
-        // Assert.That(actualResult, Is.EqualTo(13261850));
+        var actualResult = new Solution().SolvePt2(_personalInput);
+        
+        Console.WriteLine($"The result is {actualResult}");
+        Assert.That(actualResult, Is.EqualTo(46));
     }
 
     [Test]
@@ -38,10 +40,44 @@ public class Tests
 
         Assert.That(actualSum, Is.EqualTo(35));
     }
+
+    [Test]
+    public void It_returns_correct_result_for_pt2_of_example()
+    {
+        var actualResult = new Solution().SolvePt2(_personalInput);
+        
+        Console.WriteLine($"The result is {actualResult}");
+        Assert.That(actualResult, Is.EqualTo(46));
+    }
 }
 
 public class Solution
 {
+    public long SolvePt2(string personalInput)
+    {
+        var parseResult = ParseInput(personalInput);
+        List<long> pipelineInputs = parseResult.Seeds;
+        foreach (var maps in parseResult.Pipelines)
+        {
+            var pipelineOutput = new List<long>();
+            foreach (var num in pipelineInputs)
+            {
+                var map = maps.SingleOrDefault(x => x.Src.Start <= num && num <= x.Src.End);
+                if (map == null)
+                {
+                    pipelineOutput.Add(num);
+                }
+                else
+                {
+                    var distanceFromStart = num - map.Src.Start;
+                    pipelineOutput.Add(map.Dst.Start + distanceFromStart);
+                }
+            }
+            pipelineInputs = pipelineOutput;
+        }
+        return pipelineInputs.Min();
+    }
+
     public long SolvePt1(string personalInput)
     {
         var parseResult = ParseInput(personalInput);
@@ -61,10 +97,8 @@ public class Solution
                     var distanceFromStart = num - map.Src.Start;
                     pipelineOutput.Add(map.Dst.Start + distanceFromStart);
                 }
-
-                pipelineInputs = pipelineOutput;
-                Console.WriteLine(string.Join(" ", pipelineInputs));
             }
+            pipelineInputs = pipelineOutput;
         }
         return pipelineInputs.Min();
     }
@@ -77,6 +111,25 @@ public class Solution
             .Split(' ')
             .Select(long.Parse)
             .ToList();
+
+        var seedsAndRanges = lines[0]
+            .Replace("seeds: ", "")
+            .Split(' ')
+            .Select(long.Parse)
+            .ToArray();
+
+        var seedsForPt2 = new List<long>();
+        for (var j = 0; j < seedsAndRanges.Length; j += 2)
+        {
+            var currCount = 1;
+            long curr = seedsAndRanges[j];
+            long max = seedsAndRanges[j + 1];
+            seeds.Add(curr);
+            while (currCount < max)
+            {
+                seedsForPt2.Add(++curr);
+            }
+        }
 
         var pipelinesMaps = new List<Map>[7];
         var i = 0;
@@ -101,10 +154,12 @@ public class Solution
             i++;
         }
 
-        return new ParseResult(seeds, pipelinesMaps);
+        return new ParseResult(seeds, seedsForPt2, pipelinesMaps);
     }
+
+    
 }
 
 public record Range(long Start, long End);
 public record Map(Range Src, Range Dst);
-public record ParseResult(List<long> Seeds, List<Map>[] Pipelines);
+public record ParseResult(List<long> Seeds, List<long> SeedsForPt2, List<Map>[] Pipelines);
