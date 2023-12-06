@@ -65,10 +65,9 @@ public class Solution
             if (IsIntegerOutOfTheRange(upperBound))
                 wins--;
 
-            bool IsIntegerOutOfTheRange(long number)
-            {
-                return -number * number + number * recordTime - recordDistance == 0; 
-            } 
+            //-x^2 + x*recordTime - recordDistance == 0
+            bool IsIntegerOutOfTheRange(long number) => 
+                -number * number + number * recordTime - recordDistance == 0;
 
             possibleWinsArr[i] = wins;
         }
