@@ -5,17 +5,25 @@ namespace Day6;
 
 public class Tests
 {
-    private int[,] _exampleInput = { { 7, 15, 30 }, { 9, 40, 200 } };
-    private int[,] _personalInput = { { 61, 70, 90, 66 }, { 643, 1184, 1362, 1041 } };
+    private readonly long[,] _exampleInput = { { 7, 15, 30 }, { 9, 40, 200 } };
+    private readonly long[,] _personalInput1 = { { 61, 70, 90, 66 }, { 643, 1184, 1362, 1041 } };
+    private readonly long[,] _personalInput2 = { { 61709066 }, { 643118413621041 } };
 
     [Test]
     public void It_solves_part1_for_my_personal_input()
     {
-        var actualResult = new Solution().SolvePt1(_personalInput);
+        var actualResult = new Solution().SolvePt1(_personalInput1);
 
+        Assert.That(actualResult, Is.EqualTo(293046));
+    }
 
-        Console.WriteLine($"The result is {actualResult}");
-        Assert.That(actualResult, Is.EqualTo(621354867));
+    [Test]
+    public void It_solves_part2_for_my_personal_input()
+    {
+        var actualResult = new Solution().SolvePt1(_personalInput2);
+
+        Console.WriteLine(actualResult);
+        Assert.That(actualResult, Is.EqualTo(35150181));
     }
 
     [Test]
@@ -29,42 +37,42 @@ public class Tests
 
 public class Solution
 {
-    public int SolvePt1(int[,] arr)
+    public long SolvePt1(long[,] arr)
     {
-        var countOfPossibleSolutions = new int[arr.GetLength(0)];
-        for (int i = 0; i < arr.GetLength(0); i++)
-        {
-            var recordTime = arr[0, i];
-            var recordDistance = arr[1, i];
+        var possibleWinsArr = new long[arr.GetLength(1)];
 
-            // distance = time * speed
-            // speed = distance/time
-            var minSpeedToAchieve = (int)Math.Ceiling(recordDistance / (float)recordTime);
-            var maxSpeedToAchieve = recordDistance / 1; 
-            countOfPossibleSolutions[i] = recordTime - minSpeedToAchieve - 1;
+        for (int i = 0; i < arr.GetLength(1); i++)
+        {
+            /*
+             * Solving equation:
+             *  -x^2 + x*recordTime - recordDistance > 0,
+             *  where x is the speed
+             */
+            var (recordTime, recordDistance) = (arr[0, i], arr[1, i]);
+
+            double sqrtD = Math.Sqrt(recordTime * recordTime - 4 * -1 * -recordDistance);
+            double x1 = (-recordTime + sqrtD) / (2 * -1);
+            double x2 = (-recordTime - sqrtD) / (2 * -1);
+            
+            long lowerBound = (long)Math.Ceiling(Math.Min(x1, x2));
+            long upperBound = (long)Math.Floor(Math.Max(x1, x2));
+            long wins = upperBound - lowerBound + 1;   
+            
+            //solution is in range (x1; x2) but depending on whether integer
+            //number give 0 for the equation we might want to exclude them
+            if (IsIntegerOutOfTheRange(lowerBound))
+                wins--;
+            if (IsIntegerOutOfTheRange(upperBound))
+                wins--;
+
+            bool IsIntegerOutOfTheRange(long number)
+            {
+                return -number * number + number * recordTime - recordDistance == 0; 
+            } 
+
+            possibleWinsArr[i] = wins;
         }
 
-        return countOfPossibleSolutions.Aggregate(1, (current, t) => current * t);
+        return possibleWinsArr.Aggregate(1L, (current, t) => current * t);
     }
-
-    // private int[][] ExtractNumbersFromTheString(string str)
-    // {
-    //     string pattern = @"\d+";
-    //     var i = 0;
-    //     var lines = str.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-    //     var arr = new int[lines.Length][];
-    //     foreach (var line in lines)
-    //     {
-    //         var j = 0;
-    //         var matches = Regex.Matches(line, pattern).ToList();
-    //         arr[i] = new int[matches.Count];                     
-    //         foreach (Match match in matches)
-    //         {
-    //             arr[i][j] = int.Parse(match.Value);
-    //             j++;
-    //         }
-    //         i++;
-    //     }
-    //     return arr;
-    // }
 }
