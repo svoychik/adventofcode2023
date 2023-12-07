@@ -37,6 +37,7 @@ public class Tests
 
 public class Solution
 {
+    //TODO: solve this with binary search
     public long SolvePt1(long[,] arr)
     {
         var possibleWinsArr = new long[arr.GetLength(1)];
