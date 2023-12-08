@@ -1,3 +1,5 @@
+using static Day7.Solution;
+
 namespace Day7;
 
 [TestFixture]
@@ -5,36 +7,36 @@ public class Tests
 {
     private string _exampleInput;
     private string _personalInput;
+    private string _personalInputPt2;
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
         _exampleInput = File.ReadAllText("example.txt");
         _personalInput = File.ReadAllText($"input.txt");
+        _personalInputPt2 = File.ReadAllText($"inputPt2.txt");
     }
 
     [Test]
     public void It_solves_part1_for_my_personal_input()
     {
-        var actualResult = Solution.SolvePt1(_personalInput);
+        var actualResult = new Solution().Solve(_personalInput);
 
-        Console.WriteLine($"The result is {actualResult}");
-        Assert.That(actualResult, Is.EqualTo(6440));
+        Assert.That(actualResult, Is.EqualTo(250474325));
     }
 
     [Test]
     public void It_solves_part2_for_my_personal_input()
     {
-        var actualResult = Solution.SolvePt2(_personalInput);
+        var actualResult = new Solution(). Solve(_personalInputPt2);
 
-        Console.WriteLine($"The result is {actualResult}");
-        Assert.That(actualResult, Is.EqualTo(13261850));
+        Assert.That(actualResult, Is.EqualTo(248909434));
     }
 
     [Test]
     public void It_returns_correct_result_for_pt1_of_example()
     {
-        var actualSum = Solution.SolvePt1(_exampleInput);
+        var actualSum = new Solution().Solve(_exampleInput);
 
         Assert.That(actualSum, Is.EqualTo(6440));
     }
@@ -42,15 +44,15 @@ public class Tests
     [Test]
     public void It_returns_correct_result_for_pt2_of_example()
     {
-        var actualSum = Solution.SolvePt2(_exampleInput);
+        var actualSum = new Solution().Solve(_exampleInput);
 
-        Assert.That(actualSum, Is.EqualTo(30));
+        Assert.That(actualSum, Is.EqualTo(5905));
     }
 }
 
-public static class Solution
+public  class Solution
 {
-    public static int SolvePt1(string personalInput)
+    public int Solve(string personalInput)
     {
         var arr = personalInput.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries)
             .Select(x => x.Split(' '))
@@ -68,12 +70,11 @@ public static class Solution
                 return -1;
             if (card2.HandType == card1.HandType)
             {
-                var dictPriorityOfLetters = new Dictionary<char, int>()
+                var priorityOfLettersDict = new Dictionary<char, int>()
                 {
                     ['A'] = 14,
                     ['K'] = 13,
                     ['Q'] = 12,
-                    ['J'] = 11,
                     ['T'] = 10,
                     ['9'] = 9,
                     ['8'] = 8,
@@ -82,7 +83,8 @@ public static class Solution
                     ['5'] = 5,
                     ['4'] = 4,
                     ['3'] = 3,
-                    ['2'] = 2
+                    ['2'] = 2,
+                    ['J'] = 1
                 };
                 for (int i = 0; i < card2.Value.Length; i++)
                 {
@@ -90,8 +92,8 @@ public static class Solution
                     var ch2 = card2.Value[i];
                     if (ch1 == ch2)
                         continue;
-                    var p1 = dictPriorityOfLetters[ch1];
-                    var p2 = dictPriorityOfLetters[ch2];
+                    var p1 = priorityOfLettersDict[ch1];
+                    var p2 = priorityOfLettersDict[ch2];
                     return p1 > p2 ? 1 : -1;
                 }
             }
@@ -108,7 +110,7 @@ public static class Solution
     }
 
 
-    private static Dictionary<HandType, Func<string, bool>> dict = new()
+    public static Dictionary<HandType, Func<string, bool>> Dict { get; } = new()
     {
         [HandType.FiveOfKind] = str => CountSymbols(str).Any(x => x.Value == 5),
         [HandType.FourOfKind] = str => CountSymbols(str).Any(x => x.Value == 4),
@@ -121,7 +123,6 @@ public static class Solution
                                     && str.Distinct().Count() == 4,
         [HandType.HandCard] = str => str.Distinct().Count() == 5,
     };
-
 
     private static Dictionary<char, int> CountSymbols(string str)
     {
@@ -136,18 +137,31 @@ public static class Solution
 
     public static HandType DetermineHandType(string str)
     {
-        foreach (var (key, func) in dict)
+        var jokers = str.Count(x => x == 'J');
+        if (jokers == 0)
         {
-            if (func(str))
-                return key;
+            foreach (var (key, func) in Dict)
+            {
+                if (func(str))
+                    return key;
+            }
+        }
+
+        else
+        {
+            var handWithoutJoker = str.Replace("J", "");
+            if (handWithoutJoker == "")
+                return HandType.FiveOfKind;
+            var maxCountKV = CountSymbols(handWithoutJoker).MaxBy(x => x.Value);
+            var newHand = str.Replace('J', maxCountKV.Key);
+            foreach (var (key, func) in Dict)
+            {
+                if (func(newHand))
+                    return key;
+            }
         }
 
         throw new Exception(":(");
-    }
-
-    public static int SolvePt2(string personalInput)
-    {
-        return 0;
     }
 }
 
