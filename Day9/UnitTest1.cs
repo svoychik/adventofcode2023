@@ -52,8 +52,6 @@ public class Solution
     {
         var differences = new List<long>();
         var arrList = arr.ToList();
-
-        //with ZIP is slower
         for (int i = 0; i < arrList.Count - 1; i++)
         {
             differences.Add(arrList[i + 1] - arrList[i]);
@@ -70,15 +68,20 @@ public class Solution
 
     public long Solve_ExtrapolateForward(string input)
     {
-        var lines = input.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-        var arr = lines.Select(l => l.Trim().Split(' ').Select(long.Parse));
+        var arr = ParseInput(input);
         return arr.Select(arr => arr.Last() + NextTerm(arr)).Sum();
     }
 
     public long Solve_ExtrapolateBackwards(string input)
     {
+        var arr = ParseInput(input);
+        return arr.Select(a => a.Reverse()).Select(arr => arr.Last() + NextTerm(arr)).Sum();
+    }
+
+    private static IEnumerable<IEnumerable<long>> ParseInput(string input)
+    {
         var lines = input.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
         var arr = lines.Select(l => l.Trim().Split(' ').Select(long.Parse));
-        return arr.Select(a => a.Reverse()).Select(arr => arr.Last() + NextTerm(arr)).Sum();
+        return arr;
     }
 }
