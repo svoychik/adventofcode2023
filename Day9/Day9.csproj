@@ -17,4 +17,13 @@
         <PackageReference Include="coverlet.collector" Version="6.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="example.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="input.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

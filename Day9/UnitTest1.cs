@@ -1,67 +1,84 @@
-using NUnit.Framework.Constraints;
-using static Day7.Solution;
-
-namespace Day7;
+namespace Day9;
 
 [TestFixture]
 public class Tests
 {
     private string _exampleInput;
     private string _personalInput;
-    private string _personalInputPt2;
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
         _exampleInput = File.ReadAllText("example.txt");
         _personalInput = File.ReadAllText($"input.txt");
-        _personalInputPt2 = File.ReadAllText($"inputPt2.txt");
     }
 
     [Test]
     public void It_solves_part1_for_my_personal_input()
     {
-        var actualResult = new Solution().SolvePt1(_personalInput);
+        var actualResult = new Solution().Solve_ExtrapolateForward(_personalInput);
 
-        Assert.That(actualResult, Is.EqualTo(250474325));
+        Assert.That(actualResult, Is.EqualTo(1757008019));
     }
 
     [Test]
     public void It_solves_part2_for_my_personal_input()
     {
-        var actualResult = new Solution().SolvePt2(_personalInputPt2);
+        var actualResult = new Solution().Solve_ExtrapolateBackwards(_personalInput);
 
-        Assert.That(actualResult, Is.EqualTo(248909434));
+        Assert.That(actualResult, Is.EqualTo(995));
     }
 
     [Test]
     public void It_returns_correct_result_for_pt1_of_example()
     {
-        var actualSum = new Solution().SolvePt1(_exampleInput);
+        var actualSum = new Solution().Solve_ExtrapolateForward(_exampleInput);
 
-        Assert.That(actualSum, Is.EqualTo(6440));
+        Assert.That(actualSum, Is.EqualTo(114));
     }
 
     [Test]
     public void It_returns_correct_result_for_pt2_of_example()
     {
-        var actualSum = new Solution().SolvePt2(_exampleInput);
+        var actualSum = new Solution().Solve_ExtrapolateBackwards(_exampleInput);
 
-        Assert.That(actualSum, Is.EqualTo(5905));
+        Assert.That(actualSum, Is.EqualTo(2));
     }
 }
 
-public  class Solution
+public class Solution
 {
-    public int SolvePt1(string personalInput)
+    static long NextTerm(IEnumerable<long> arr) 
     {
-        var arr = personalInput.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-        return 0;
+        var differences = new List<long>();
+        var arrList = arr.ToList();
+
+        //with ZIP is slower
+        for (int i = 0; i < arrList.Count - 1; i++)
+        {
+            differences.Add(arrList[i + 1] - arrList[i]);
+        }
+
+        // Check if all differences are the same
+        if (differences.Distinct().Count() == 1)
+        {
+            return differences[0];
+        }
+        return differences[differences.Count - 1] + NextTerm(differences);
+
     }
 
-
-    public int SolvePt2(string exampleInput)
+    public long Solve_ExtrapolateForward(string input)
     {
-        throw new NotImplementedException();
+        var lines = input.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+        var arr = lines.Select(l => l.Trim().Split(' ').Select(long.Parse));
+        return arr.Select(arr => arr.Last() + NextTerm(arr)).Sum();
+    }
+
+    public long Solve_ExtrapolateBackwards(string input)
+    {
+        var lines = input.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+        var arr = lines.Select(l => l.Trim().Split(' ').Select(long.Parse));
+        return arr.Select(a => a.Reverse()).Select(arr => arr.Last() + NextTerm(arr)).Sum();
     }
 }
