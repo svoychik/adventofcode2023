@@ -69,6 +69,7 @@ public class Solution
     
     static long NextTerm(long[] arr) 
     {
+        // To not create the whole array every time, I'm going to use segment
         var segment = new ArraySegment<long>(arr, 1, arr.Length - 1);
 
         var reduced = arr.Zip(segment, (a, b) => b - a).ToArray();
