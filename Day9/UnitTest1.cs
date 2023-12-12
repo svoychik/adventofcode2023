@@ -48,7 +48,8 @@ public class Tests
 
 public class Solution
 {
-    static long NextTerm(IEnumerable<long> arr) 
+    
+    static long NextTerm2(IEnumerable<long> arr) 
     {
         var differences = new List<long>();
         var arrList = arr.ToList();
@@ -62,26 +63,38 @@ public class Solution
         {
             return differences[0];
         }
-        return differences[differences.Count - 1] + NextTerm(differences);
+        return differences[differences.Count - 1] + NextTerm2(differences);
 
+    }
+    
+    static long NextTerm(long[] arr) 
+    {
+        var segment = new ArraySegment<long>(arr, 1, arr.Length - 1);
+
+        var reduced = arr.Zip(segment, (a, b) => b - a).ToArray();
+
+        if (reduced.Distinct().Count() == 1)
+            return reduced.First();
+    
+        return reduced.Last() + NextTerm(reduced.ToArray());
     }
 
     public long Solve_ExtrapolateForward(string input)
     {
-        var arr = ParseInput(input);
+        var arr = ParseInput(input).ToArray();
         return arr.Select(arr => arr.Last() + NextTerm(arr)).Sum();
     }
 
     public long Solve_ExtrapolateBackwards(string input)
     {
         var arr = ParseInput(input);
-        return arr.Select(a => a.Reverse()).Select(arr => arr.Last() + NextTerm(arr)).Sum();
+        return arr.Select(a => a.Reverse()).Select(arr => arr.Last() + NextTerm(arr.ToArray())).Sum();
     }
 
-    private static IEnumerable<IEnumerable<long>> ParseInput(string input)
+    private static long[][] ParseInput(string input)
     {
         var lines = input.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-        var arr = lines.Select(l => l.Trim().Split(' ').Select(long.Parse));
+        var arr = lines.Select(l => l.Trim().Split(' ').Select(long.Parse).ToArray()).ToArray();
         return arr;
     }
 }
