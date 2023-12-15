@@ -1,5 +1,3 @@
-using NUnit.Framework.Constraints;
-
 namespace Day12;
 
 [TestFixture]
